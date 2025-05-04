@@ -1,0 +1,12 @@
+@startuml Admin get detail courses data
+  header ADMIN GET DETAIL COURSES DATA
+  start
+    :find all courses in database with isActive = true && _id = coursesId;
+    if (have error?) then (yes)
+      :response 500, internal error;
+      stop
+    else (no)
+      :response 200, courses list;
+    endif
+  end
+@enduml
