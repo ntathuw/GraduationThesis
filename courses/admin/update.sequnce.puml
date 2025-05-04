@@ -1,0 +1,45 @@
+@startuml User on course admin sequence
+
+header UPDATE USER ON COURSE ADMIN SEQUENCE
+actor Admin 
+control server
+database user
+database userOncourse
+
+opt UPDATE: Admin update user on course
+  Admin -> server: POST /v1/users/on-course/update/:userId
+  activate server
+  server -> server: check token
+  alt <font color=red>token invalid</font>
+    server --> Admin: 401, unauthorized error
+  else <font color=green>token valid</font>
+    server -> server: check isAdmin
+    alt <font color=red>is not admin</font>
+      server --> Admin: 403, forbidden error
+    else <font color=green>is admin</font>
+      server -> userOncourse: find userOncourse with _id in id list from FE
+      activate userOncourse
+      alt <font color=red>have error</font>
+        userOncourse --> server: error
+        server --> Admin: 500, internal error
+      else <font color=green>success</font>
+        userOncourse --> server: user data
+        server -> userOncourse: update userOncourse if new applyDate == old applyDate and create if new applyDate > old applyDate
+        server --> Admin: 409, inValidCourseerror if new applyDate < old applyDate
+        alt <font color=red>have error</font>
+          userOncourse --> server: error
+          server --> Admin: 500, internal error
+        else <font color=green>success</font>
+          userOncourse --> server: userOncourse data
+          server --> Admin: 200, success
+        end
+      end
+
+
+    end
+    deactivate userOncourse
+    deactivate server
+  end
+end
+
+@enduml

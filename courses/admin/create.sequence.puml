@@ -1,0 +1,54 @@
+@startuml Project admin sequence
+
+header CREATE COURSE ADMIN SEQUENCE
+actor Admin 
+control server
+database course
+database lesson
+
+opt CREATE: Admin create course
+  Admin -> server: POST /v1/courses/create-course
+  activate server
+  server -> server: check token
+  alt <font color=red>token invalid</font>
+    server --> Admin: 401, unauthorized error
+  else <font color=green>token valid</font>
+    server -> server: check isAdmin
+    alt <font color=red>is not admin</font>
+      server --> Admin: 403, forbidden error
+    else <font color=green>is admin</font>
+      server -> course: find course with the name
+      activate course
+      alt <font color=red>have error</font>
+        course --> server: error
+        server --> Admin: 500, internal error
+      else <font color=red>have course data</font>
+        course --> server: course data
+        server --> Admin: 409, existed course
+      else <font color=green>have no course data</font>
+        course --> server: undefined
+        server -> lesson: find lesson with course
+        activate lesson
+        alt <font color=red>have no lesson data</font>
+          lesson --> server: undefined
+          server --> Admin: 409, required lesson error
+        else <font color=green>have lesson data</font>
+          lesson --> server: lesson data
+          deactivate lesson
+          server -> course: create new course
+          alt <font color=red>have error</font>
+            course --> server: error
+            server --> Admin: 500, internal error
+          else <font color=green>success</font>
+            course --> server: success
+            server --> Admin: 200, success
+          end
+        end
+      end
+    end
+    deactivate course
+    deactivate server
+  end
+end
+
+@enduml

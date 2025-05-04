@@ -1,0 +1,112 @@
+@startuml Course admin sequence
+
+header READ COURSE ADMIN SEQUENCE
+actor Admin 
+control server
+database course
+opt READ: Admin get all course list
+  Admin -> server: GET /v1/courses/list
+  activate server
+  server -> server: check token
+  alt <font color=red>token invalid</font>
+    server --> Admin: 401, unauthorized error
+  else <font color=green>token valid</font>
+    server -> course: find all course with active and unarchived
+    activate course
+    alt <font color=red>have error</font>
+      course --> server: error
+      server --> Admin: 500, internal error
+    else <font color=green>success</font>
+      course --> server: all course 
+      server --> Admin: 200, with all course list
+    end
+    deactivate course
+    deactivate server
+  end
+end
+
+opt READ: Admin get all archived course list
+  Admin -> server: GET /v1/courses/list-of-archived-course
+  activate server
+  server -> server: check token
+  alt <font color=red>token invalid</font>
+    server --> Admin: 401, unauthorized error
+  else <font color=green>token valid</font>
+    server -> course: find all course with active and archived
+    activate course
+    alt <font color=red>have error</font>
+      course --> server: error
+      server --> Admin: 500, internal error
+    else <font color=green>success</font>
+      course --> server: all course 
+      server --> Admin: 200, with all course list
+    end
+    deactivate course
+    deactivate server
+  end
+end
+
+opt READ: Admin can search courses
+  Admin -> server: GET /v1/courses/search/:courseName
+  activate server
+  server -> server: check token
+  alt <font color=red>token invalid</font>
+    server --> Admin: 401, unauthorized error
+  else <font color=green>token valid</font>
+    server -> course: find all course with active and unarchived with courseName
+    activate course
+    alt <font color=red>have error</font>
+      course --> server: error
+      server --> Admin: 500, internal error
+    else <font color=green>success</font>
+      course --> server: all course 
+      server --> Admin: 200, with all course list
+    end
+    deactivate course
+    deactivate server
+  end
+end
+
+opt READ: Admin can search archived courses
+  Admin -> server: GET /v1/courses/search-archived-course/:courseName
+  activate server
+  server -> server: check token
+  alt <font color=red>token invalid</font>
+    server --> Admin: 401, unauthorized error
+  else <font color=green>token valid</font>
+    server -> course: find all course with active and archived with courseName
+    activate course
+    alt <font color=red>have error</font>
+      course --> server: error
+      server --> Admin: 500, internal error
+    else <font color=green>success</font>
+      course --> server: all course 
+      server --> Admin: 200, with all course list
+    end
+    deactivate course
+    deactivate server
+  end
+end
+
+opt READ: Admin can get course detail
+  Admin -> server: GET /v1/courses/detail/:courseId
+  activate server
+  server -> server: check token
+  alt <font color=red>token invalid</font>
+    server --> Admin: 401, unauthorized error
+  else <font color=green>token valid</font>
+    server -> course: find course data with courseId
+    activate course
+    alt <font color=red>have error</font>
+      course --> server: error
+      server --> Admin: 500, internal error
+    else <font color=green>success</font>
+      course --> server: course data 
+      server --> Admin: 200, with course data
+    end
+    deactivate course
+    deactivate server
+  end
+end
+
+@enduml
