@@ -1,0 +1,13 @@
+@startuml Project user activity
+
+header READ COURSE LIST USER ACTIVITY
+  :find user data in database with _id = _id of current user and isActive = true;
+  :find project data in database of projects of user;
+  :find currency data of every project;
+  :calculate budget remain of every project;
+  if (have error?) then (yes)
+    :response 500, internal error;
+  else (no)
+    :response 200, project list;
+  end
+@enduml

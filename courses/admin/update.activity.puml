@@ -1,0 +1,14 @@
+@startuml Project admin activity 
+
+header UPDATE COURSE ADMIN ACTIVITY
+start
+  :find and update course in database with courseId;
+  if (have error?) then (yes)
+    :response 500, internal error;
+    stop
+  else (no)
+    :create activity document;
+    :response 200, updated project data;
+  endif
+end
+@enduml
