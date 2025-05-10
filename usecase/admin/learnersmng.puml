@@ -1,0 +1,13 @@
+@startuml
+left to right direction
+actor "Learner" as fc
+rectangle Courses {
+  usecase "Join the courses" as UC1
+  usecase "Complete topics" as UC2
+  usecase "Search" as UC3
+}
+fc --> UC1
+fc --> UC2
+fc --> UC3
+
+@enduml

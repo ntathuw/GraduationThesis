@@ -1,0 +1,16 @@
+@startuml
+left to right direction
+actor "Admin" as fc
+rectangle coursesmng {
+  usecase "Create" as UC1
+  usecase "Edit" as UC2
+  usecase "Delete" as UC3
+  usecase "Search" as UC4
+}
+fc --> UC1
+fc --> UC2
+fc --> UC3
+fc --> UC4
+fc --> UC5
+
+@enduml
