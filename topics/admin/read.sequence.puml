@@ -1,0 +1,50 @@
+@startuml Topic admin sequence
+
+header READ TOPIC ADMIN SEQUENCE
+actor Admin 
+control server
+database topic
+
+opt READ: Admin get topic list by course
+  Admin -> server: GET /v1/topics/list/:courseId
+  activate server
+  server -> server: check token
+  alt <font color=red>token invalid</font>
+    server --> Admin: 401, unauthorized error
+  else <font color=green>token valid</font>
+    server -> topic: find all topics by courseId
+    activate topic
+    alt <font color=red>error</font>
+      topic --> server: error
+      server --> Admin: 500, internal error
+    else <font color=green>success</font>
+      topic --> server: list of topics
+      server --> Admin: 200, topic list
+    end
+    deactivate topic
+    deactivate server
+  end
+end
+
+opt READ: Admin get topic detail
+  Admin -> server: GET /v1/topics/detail/:topicId
+  activate server
+  server -> server: check token
+  alt <font color=red>token invalid</font>
+    server --> Admin: 401, unauthorized error
+  else <font color=green>token valid</font>
+    server -> topic: find topic by id
+    activate topic
+    alt <font color=red>not found</font>
+      topic --> server: null
+      server --> Admin: 404, topic not found
+    else <font color=green>success</font>
+      topic --> server: topic data
+      server --> Admin: 200, topic detail
+    end
+    deactivate topic
+    deactivate server
+  end
+end
+
+@enduml

@@ -1,0 +1,16 @@
+@startuml Admin track learner progress
+header ADMIN TRACK LEARNER PROGRESS
+start
+
+:Request progress for userId;
+:fetch all completed topics for user;
+if (error?) then (yes)
+  :response 500, internal error;
+  stop
+else (success)
+  :calculate number of completed topics per course;
+  :response 200, progress summary;
+endif
+
+end
+@enduml

@@ -1,22 +1,21 @@
-@startuml Project admin activity 
-@startuml Admin update course
-header ADMIN UPDATE COURSE
+@startuml Admin update user
+header ADMIN UPDATE USER
 start
   :check token and isAdmin;
   if (unauthorized?) then (yes)
     :response 401 or 403;
     stop
-  else (no)
-    :find course by ID;
+  else (authorized)
+    :find user by ID;
     if (not found?) then (yes)
-      :response 404, not found;
+      :response 404, user not found;
       stop
     else (found)
-      :update course data;
+      :update user info;
       if (error?) then (yes)
         :response 500, internal error;
-      else (no)
-        :response 200, update success;
+      else (success)
+        :response 200, user updated;
       endif
     endif
   endif

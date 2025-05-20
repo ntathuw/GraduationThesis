@@ -1,21 +1,21 @@
-@startuml Admin delete course
-header ADMIN DELETE COURSE
+@startuml Admin delete user
+header ADMIN DELETE USER
 start
   :check token and isAdmin;
   if (unauthorized?) then (yes)
     :response 401 or 403;
     stop
-  else (no)
-    :find course by ID;
+  else (authorized)
+    :find user by ID;
     if (not found?) then (yes)
-      :response 404, not found;
+      :response 404, user not found;
       stop
     else (found)
-      :delete course;
+      :delete user record;
       if (delete failed?) then (yes)
         :response 500, internal error;
-      else (no)
-        :response 200, delete success;
+      else (success)
+        :response 200, user deleted;
       endif
     endif
   endif

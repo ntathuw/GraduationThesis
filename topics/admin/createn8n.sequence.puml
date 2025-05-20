@@ -1,0 +1,31 @@
+@startuml Topic admin sequence
+
+header CREATE TOPIC AUTOMATICALLY VIA N8N ON COURSE CREATED
+actor Admin
+participant "n8n Workflow" as n8n
+database MongoDB
+participant "AI Agent" as AI
+
+opt TRIGGER: When a course is inserted into MongoDB
+  MongoDB -> n8n: Trigger new course inserted (change stream or poll)
+  activate n8n
+
+  n8n -> n8n: Extract course ID and title
+  n8n -> AI: Generate topic (title, description, category)
+  activate AI
+  AI --> n8n: topic data
+  deactivate AI
+
+  n8n -> MongoDB: Insert topic into `topics` collection
+  MongoDB --> n8n: insertedTopicId
+
+  n8n -> MongoDB: Update `courses` with new topic ID
+  MongoDB --> n8n: update confirmation
+
+  n8n --> Admin: ✅ Topic created and linked automatically (optional notification)
+  deactivate n8n
+end
+
+@enduml
+
+

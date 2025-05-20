@@ -1,12 +1,12 @@
-@startuml Course admin sequence
+@startuml Topic admin sequence
 
-header DELETE COURSE ADMIN SEQUENCE
+header UPDATE TOPIC ADMIN SEQUENCE
 actor Admin 
 control server
-database course
+database topic
 
-opt DELETE: Admin delete course
-  Admin -> server: DELETE /v1/courses/delete/:courseId
+opt UPDATE: Admin update topic
+  Admin -> server: PUT /v1/topics/update/:topicId
   activate server
   server -> server: check token
   alt <font color=red>token invalid</font>
@@ -16,23 +16,23 @@ opt DELETE: Admin delete course
     alt <font color=red>is not admin</font>
       server --> Admin: 403, forbidden error
     else <font color=green>is admin</font>
-      server -> course: find course by id
-      activate course
+      server -> topic: find topic by id
+      activate topic
       alt <font color=red>not found</font>
-        course --> server: null
-        server --> Admin: 404, course not found
+        topic --> server: null
+        server --> Admin: 404, topic not found
       else <font color=green>found</font>
-        course --> server: course data
-        server -> course: delete course
-        alt <font color=red>error</font>
-          course --> server: error
+        topic --> server: topic data
+        server -> topic: update topic info
+        alt <font color=red>update error</font>
+          topic --> server: error
           server --> Admin: 500, internal error
         else <font color=green>success</font>
-          course --> server: success
-          server --> Admin: 200, deleted
+          topic --> server: updated
+          server --> Admin: 200, updated topic
         end
       end
-      deactivate course
+      deactivate topic
     end
     deactivate server
   end

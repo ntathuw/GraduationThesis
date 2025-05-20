@@ -1,0 +1,23 @@
+@startuml Admin update topic
+header ADMIN UPDATE TOPIC
+start
+  :check token and isAdmin;
+  if (unauthorized?) then (yes)
+    :response 401 or 403 error;
+    stop
+  else (authorized)
+    :find topic by topicId;
+    if (not found?) then (yes)
+      :response 404, topic not found;
+      stop
+    else (found)
+      :update topic info;
+      if (error?) then (yes)
+        :response 500, internal error;
+      else (success)
+        :response 200, topic updated;
+      endif
+    endif
+  endif
+end
+@enduml

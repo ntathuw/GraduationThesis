@@ -1,0 +1,29 @@
+@startuml Admin create course
+header ADMIN CREATE COURSE
+start
+  :check token and isAdmin;
+  if (unauthorized?) then (yes)
+    :response 401 or 403 error;
+    stop
+  else (no)
+    :check if course name exists;
+    if (exists?) then (yes)
+      :response 409, course already exists;
+      stop
+    else (no)
+      :check if course has at least 1 topic;
+      if (no topic found?) then (yes)
+        :response 409, topic required;
+        stop
+      else (has topic)
+        :insert new course with topic list;
+        if (insert failed?) then (yes)
+          :response 500, internal error;
+        else (success)
+          :response 200, course created;
+        endif
+      endif
+    endif
+  endif
+end
+@enduml

@@ -1,0 +1,12 @@
+@startuml User get course detail
+header USER GET COURSE DETAIL
+start
+  :get course by courseId;
+  if (not found?) then (yes)
+    :response 404, course not found;
+    stop
+  else (found)
+    :response 200, course detail;
+  endif
+end
+@enduml

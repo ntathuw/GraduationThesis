@@ -1,0 +1,23 @@
+@startuml Admin read users
+header ADMIN READ USERS (LIST + SEARCH)
+start
+
+:Request all users (GET /v1/users/list);
+:fetch all user records;
+if (list error?) then (yes)
+  :response 500, internal error;
+  stop
+else (success)
+  :response 200, user list;
+endif
+
+:Search users by keyword (name/email);
+:filter users in database using keyword;
+if (search error?) then (yes)
+  :response 500, internal error;
+else (found)
+  :response 200, matched users;
+endif
+
+end
+@enduml

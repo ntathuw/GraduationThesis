@@ -1,0 +1,25 @@
+@startuml User topic sequence
+
+header USER COMPLETE TOPIC SEQUENCE
+actor User
+control server
+database progress
+
+opt UPDATE: User mark topic as completed
+  User -> server: POST /v1/progress/complete-topic
+  activate server
+  server -> server: validate topicId and userId
+  server -> progress: upsert completion record
+  activate progress
+  alt <font color=red>error</font>
+    progress --> server: error
+    server --> User: 500, internal error
+  else <font color=green>success</font>
+    progress --> server: updated
+    server --> User: 200, topic marked complete
+  end
+  deactivate progress
+  deactivate server
+end
+
+@enduml

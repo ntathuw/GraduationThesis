@@ -1,12 +1,12 @@
-@startuml Course admin sequence
+@startuml User admin sequence
 
-header DELETE COURSE ADMIN SEQUENCE
+header DELETE USER ADMIN SEQUENCE
 actor Admin 
 control server
-database course
+database user
 
-opt DELETE: Admin delete course
-  Admin -> server: DELETE /v1/courses/delete/:courseId
+opt DELETE: Admin delete user
+  Admin -> server: DELETE /v1/users/delete/:userId
   activate server
   server -> server: check token
   alt <font color=red>token invalid</font>
@@ -16,23 +16,23 @@ opt DELETE: Admin delete course
     alt <font color=red>is not admin</font>
       server --> Admin: 403, forbidden error
     else <font color=green>is admin</font>
-      server -> course: find course by id
-      activate course
+      server -> user: find user by ID
+      activate user
       alt <font color=red>not found</font>
-        course --> server: null
-        server --> Admin: 404, course not found
+        user --> server: null
+        server --> Admin: 404, user not found
       else <font color=green>found</font>
-        course --> server: course data
-        server -> course: delete course
-        alt <font color=red>error</font>
-          course --> server: error
+        user --> server: user data
+        server -> user: delete user
+        alt <font color=red>delete failed</font>
+          user --> server: error
           server --> Admin: 500, internal error
         else <font color=green>success</font>
-          course --> server: success
-          server --> Admin: 200, deleted
+          user --> server: deleted
+          server --> Admin: 200, user deleted
         end
       end
-      deactivate course
+      deactivate user
     end
     deactivate server
   end

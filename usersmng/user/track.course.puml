@@ -1,0 +1,18 @@
+@startuml User track progress
+header USER TRACK PROGRESS
+start
+
+:Request progress for a course (GET /v1/progress/:courseId);
+:get userId from token;
+:fetch completed topics by userId and courseId;
+if (error?) then (yes)
+  :response 500, internal error;
+  stop
+else (success)
+  :fetch total topics for courseId;
+  :calculate percentage = completed / total * 100;
+  :response 200, progress summary;
+endif
+
+end
+@enduml

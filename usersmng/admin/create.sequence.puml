@@ -1,0 +1,41 @@
+@startuml User admin sequence
+
+header CREATE USER ADMIN SEQUENCE
+actor Admin 
+control server
+database user
+
+opt CREATE: Admin create user (learner)
+  Admin -> server: POST /v1/users/create-user
+  activate server
+  server -> server: check token
+  alt <font color=red>token invalid</font>
+    server --> Admin: 401, unauthorized error
+  else <font color=green>token valid</font>
+    server -> server: check isAdmin
+    alt <font color=red>is not admin</font>
+      server --> Admin: 403, forbidden error
+    else <font color=green>is admin</font>
+      server -> user: check if email exists
+      activate user
+      alt <font color=red>email exists</font>
+        user --> server: existing user
+        server --> Admin: 409, email already exists
+      else <font color=green>email available</font>
+        user --> server: null
+        server -> user: insert new user
+        alt <font color=red>insert error</font>
+          user --> server: error
+          server --> Admin: 500, internal error
+        else <font color=green>success</font>
+          user --> server: new user id
+          server --> Admin: 200, user created
+        end
+      end
+      deactivate user
+    end
+    deactivate server
+  end
+end
+
+@enduml

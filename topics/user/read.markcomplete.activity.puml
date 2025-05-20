@@ -1,0 +1,33 @@
+@startuml User view and complete topic
+header USER VIEW & COMPLETE TOPIC
+start
+
+:Request topic list by courseId (GET /v1/topics/:courseId);
+:get all topics for courseId;
+if (list error?) then (yes)
+  :response 500, internal error;
+  stop
+else (no)
+  :response 200, topic list;
+endif
+
+:User selects a topic from list;
+:get topic by topicId;
+if (not found?) then (yes)
+  :response 404, topic not found;
+  stop
+else (found)
+  :response 200, topic detail;
+endif
+
+:User clicks "Mark Complete";
+:validate topicId and userId;
+:upsert progress record into database;
+if (progress error?) then (yes)
+  :response 500, internal error;
+else (success)
+  :response 200, marked complete;
+endif
+
+end
+@enduml

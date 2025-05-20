@@ -1,0 +1,40 @@
+@startuml User topic sequence
+
+header USER VIEW TOPICS (LIST + DETAIL) SEQUENCE
+actor User
+control server
+database topic
+
+opt READ: User view topic list by course
+  User -> server: GET /v1/topics/:courseId
+  activate server
+  server -> topic: find all topics by courseId
+  activate topic
+  alt <font color=red>error</font>
+    topic --> server: error
+    server --> User: 500, internal error
+  else <font color=green>success</font>
+    topic --> server: topic list
+    server --> User: 200, topic list
+  end
+  deactivate topic
+  deactivate server
+end
+
+opt READ: User view topic detail
+  User -> server: GET /v1/topics/detail/:topicId
+  activate server
+  server -> topic: find topic by ID
+  activate topic
+  alt <font color=red>not found</font>
+    topic --> server: null
+    server --> User: 404, topic not found
+  else <font color=green>success</font>
+    topic --> server: topic detail
+    server --> User: 200, topic detail
+  end
+  deactivate topic
+  deactivate server
+end
+
+@enduml

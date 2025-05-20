@@ -1,111 +1,40 @@
-@startuml Course user sequence
+@startuml User course sequence
 
-header COURSE USER SEQUENCE
-actor User 
+header USER VIEW COURSES (LIST + DETAIL) SEQUENCE
+actor User
 control server
 database course
-database user
 
-opt READ: User get all course list
-  User -> server: GET /v1/courses/list
+opt READ: User view available course list
+  User -> server: GET /v1/courses
   activate server
-  server -> server: check token
-  alt <font color=red>token invalid</font>
-    server --> User: 401, unauthorized error
-  else <font color=green>token valid</font>
-    server -> course: find all course with active and unarchived
-    activate course
-    alt <font color=red>have error</font>
-      course --> server: error
-      server --> User: 500, internal error
-    else <font color=green>success</font>
-      course --> server: all course 
-      server --> User: 200, with all course list
-    end
-    deactivate course
-    deactivate server
+  server -> course: find all courses (active, published)
+  activate course
+  alt <font color=red>error</font>
+    course --> server: error
+    server --> User: 500, internal error
+  else <font color=green>success</font>
+    course --> server: list of courses
+    server --> User: 200, course list
   end
+  deactivate course
+  deactivate server
 end
 
-opt READ: User get all course list of current user
-  User -> server: GET /v1/courses/list-of-user
+opt READ: User view course detail
+  User -> server: GET /v1/courses/:courseId
   activate server
-  server -> server: check token
-  alt <font color=red>token invalid</font>
-    server --> User: 401, unauthorized error
-  else <font color=green>token valid</font>
-    server -> user: find user data of current user
-    activate user
-    alt <font color=red>have error</font>
-      user --> server: error
-      server --> User: 500, internal error
-    else <font color=green>success</font>
-      user --> server: current user data
-      server -> course: find all course data by course's id list of current user with active and unarchived
-      deactivate user
-      activate course
-      alt <font color=red>have error</font>
-        course --> server: error
-        server --> User: 500, internal error
-      else <font color=green>success</font>
-        course --> server: all course of current user
-        server --> User: 200, with all course list of current user
-      end
-    end
-    deactivate course
-    deactivate server
+  server -> course: find course by ID
+  activate course
+  alt <font color=red>not found</font>
+    course --> server: null
+    server --> User: 404, course not found
+  else <font color=green>success</font>
+    course --> server: course detail
+    server --> User: 200, course detail
   end
-end
-
-opt READ: User get course detail
-  User -> server: GET /v1/courses/detail/:courseId
-  activate server
-  server -> server: check token
-  alt <font color=red>token invalid</font>
-    server --> User: 401, unauthorized error
-  else <font color=green>token valid</font>
-    server -> course: find course with courseId and isActive = true
-    activate course
-    alt <font color=red>have error</font>
-      course --> server: error
-      server --> User: 500, internal error
-    else <font color=green>success</font>
-      course --> server: course data
-      server --> User: 200, with course data
-    end
-    deactivate course
-    deactivate server
-  end
-end
-
-opt READ: User get all course list of supervisor
-  User -> server: GET /v1/courses/list-of-supervisor
-  activate server
-  server -> server: check token
-  alt <font color=red>token invalid</font>
-    server --> User: 401, unauthorized error
-  else <font color=green>token valid</font>
-    server -> user: find user data of current user
-    activate user
-    alt <font color=red>have error</font>
-      user --> server: error
-      server --> User: 500, internal error
-    else <font color=green>success</font>
-      user --> server: supervisor data
-      server -> course: find all course data by course's id list of supervisor with active and unarchived
-      deactivate user
-      activate course
-      alt <font color=red>have error</font>
-        course --> server: error
-        server --> User: 500, internal error
-      else <font color=green>success</font>
-        course --> server: all course of supervisor
-        server --> User: 200, with all course list of supervisor
-      end
-    end
-    deactivate course
-    deactivate server
-  end
+  deactivate course
+  deactivate server
 end
 
 @enduml

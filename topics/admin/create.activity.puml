@@ -1,0 +1,23 @@
+@startuml Admin create topic
+header ADMIN CREATE TOPIC
+start
+  :check token and isAdmin;
+  if (unauthorized?) then (yes)
+    :response 401 or 403 error;
+    stop
+  else (authorized)
+    :check if course exists (courseId);
+    if (not found?) then (yes)
+      :response 404, course not found;
+      stop
+    else (valid)
+      :insert new topic (title, description, category);
+      if (insert failed?) then (yes)
+        :response 500, internal error;
+      else (success)
+        :response 200, topic created;
+      endif
+    endif
+  endif
+end
+@enduml

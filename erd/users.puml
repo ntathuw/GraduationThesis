@@ -1,0 +1,19 @@
+@startuml User
+!startsub User
+entity User {
+  -id : ObjectId <<generated>>
+  --
+  fullName: string
+  email: string
+  yearInprogram: number
+  phone: string
+  password: string
+  userData: object
+  joinDate: Date
+  dateOfBirth: Date
+  gender: EGender
+  address: string
+}
+!endsub
+
+@enduml

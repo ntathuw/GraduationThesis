@@ -1,0 +1,50 @@
+@startuml User admin sequence
+
+header READ USER ADMIN SEQUENCE
+actor Admin 
+control server
+database user
+
+opt READ: Admin get all users
+  Admin -> server: GET /v1/users/list
+  activate server
+  server -> server: check token
+  alt <font color=red>token invalid</font>
+    server --> Admin: 401, unauthorized error
+  else <font color=green>token valid</font>
+    server -> user: fetch all user data
+    activate user
+    alt <font color=red>error</font>
+      user --> server: error
+      server --> Admin: 500, internal error
+    else <font color=green>success</font>
+      user --> server: user list
+      server --> Admin: 200, user list
+    end
+    deactivate user
+    deactivate server
+  end
+end
+
+opt READ: Admin search user by name/email
+  Admin -> server: GET /v1/users/search/:keyword
+  activate server
+  server -> server: check token
+  alt <font color=red>token invalid</font>
+    server --> Admin: 401, unauthorized error
+  else <font color=green>token valid</font>
+    server -> user: find users by keyword
+    activate user
+    alt <font color=red>error</font>
+      user --> server: error
+      server --> Admin: 500, internal error
+    else <font color=green>success</font>
+      user --> server: matched users
+      server --> Admin: 200, matched user list
+    end
+    deactivate user
+    deactivate server
+  end
+end
+
+@enduml

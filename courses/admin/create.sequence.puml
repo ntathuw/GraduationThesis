@@ -1,10 +1,10 @@
-@startuml Project admin sequence
+@startuml Course admin sequence
 
 header CREATE COURSE ADMIN SEQUENCE
 actor Admin 
 control server
 database course
-database lesson
+database topic
 
 opt CREATE: Admin create course
   Admin -> server: POST /v1/courses/create-course
@@ -27,15 +27,15 @@ opt CREATE: Admin create course
         server --> Admin: 409, existed course
       else <font color=green>have no course data</font>
         course --> server: undefined
-        server -> lesson: find lesson with course
-        activate lesson
-        alt <font color=red>have no lesson data</font>
-          lesson --> server: undefined
-          server --> Admin: 409, required lesson error
-        else <font color=green>have lesson data</font>
-          lesson --> server: lesson data
-          deactivate lesson
-          server -> course: create new course
+        server -> topic: find topics related to course
+        activate topic
+        alt <font color=red>have no topic data</font>
+          topic --> server: undefined
+          server --> Admin: 409, required topic error
+        else <font color=green>have topic data</font>
+          topic --> server: topic data
+          deactivate topic
+          server -> course: create new course with topic references
           alt <font color=red>have error</font>
             course --> server: error
             server --> Admin: 500, internal error

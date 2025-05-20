@@ -1,0 +1,12 @@
+@startuml User get courses list
+header USER GET COURSE LIST
+start
+  :get all courses where isActive = true && isPublished = true;
+  if (have error?) then (yes)
+    :response 500, internal error;
+    stop
+  else (no)
+    :response 200, course list;
+  endif
+end
+@enduml

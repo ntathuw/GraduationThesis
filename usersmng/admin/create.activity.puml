@@ -1,0 +1,23 @@
+@startuml Admin create user
+header ADMIN CREATE USER
+start
+  :check token and isAdmin;
+  if (unauthorized?) then (yes)
+    :response 401 or 403;
+    stop
+  else (authorized)
+    :check if email already exists;
+    if (exists?) then (yes)
+      :response 409, email exists;
+      stop
+    else (no)
+      :insert new user (name, email, password, etc);
+      if (insert failed?) then (yes)
+        :response 500, internal error;
+      else (success)
+        :response 200, user created;
+      endif
+    endif
+  endif
+end
+@enduml

@@ -1,0 +1,34 @@
+@startuml Admin add learner to course
+header ADMIN ADD LEARNER TO COURSE
+start
+  :check token and isAdmin;
+  if (unauthorized?) then (yes)
+    :response 401 or 403;
+    stop
+  else (authorized)
+    :check if user exists by userId;
+    if (not found?) then (yes)
+      :response 404, user not found;
+      stop
+    else (found)
+      :check if course exists by courseId;
+      if (not found?) then (yes)
+        :response 404, course not found;
+        stop
+      else (found)
+        :check if user already in course;
+        if (exists?) then (yes)
+          :response 409, already enrolled;
+        else (not exists)
+          :insert record to enroll user in course;
+          if (error?) then (yes)
+            :response 500, internal error;
+          else (success)
+            :response 200, added to course;
+          endif
+        endif
+      endif
+    endif
+  endif
+end
+@enduml

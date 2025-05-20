@@ -1,0 +1,24 @@
+@startuml Admin read topics
+header ADMIN READ TOPIC (LIST + DETAIL)
+start
+
+:GET topic list by courseId;
+:find all topics where courseId = :id;
+if (error on list?) then (yes)
+  :response 500, internal error;
+  stop
+else (success)
+  :response 200, topic list;
+endif
+
+:GET topic detail by topicId;
+:find topic by topicId;
+if (not found?) then (yes)
+  :response 404, topic not found;
+  stop
+else (found)
+  :response 200, topic detail;
+endif
+
+end
+@enduml

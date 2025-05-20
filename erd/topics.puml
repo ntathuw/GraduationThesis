@@ -1,0 +1,15 @@
+@startuml Topics
+!startsub Topics
+entity Topics {
+  -id : ObjectId <<generated>>
+  --
+  *description: string
+  *name: string
+  createdAt: Date
+  updatedAt: Date
+  isCompleted: boolean
+  
+
+}
+!endsub
+@enduml
